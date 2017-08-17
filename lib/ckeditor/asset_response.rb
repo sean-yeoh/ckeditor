@@ -86,8 +86,13 @@ module Ckeditor
     end
 
     def asset_url(relative_url_root)
-      url = Ckeditor::Utils.escape_single_quotes(asset.url_content)
-
+      if asset.url_content
+        # For normal carrierwave
+        url = Ckeditor::Utils.escape_single_quotes(asset.url_content)
+      else
+        # For cloudinary carrierwave
+        url = Ckeditor::Utils.escape_single_quotes(asset.data.metadata["url"])
+      end
       if URI(url).relative?
         "#{relative_url_root}#{url}"
       else
